@@ -5,7 +5,6 @@ import { tryit } from "radash"
 import * as AuthRepository from "./AuthRepository"
 import { JWTCreateOptions, createJwt } from "../lib"
 import { verify } from "hono/jwt"
-import { env } from "bun"
 import { JWTPayload } from "../types"
 
 export const login = async (payload: LoginSchema) => {
@@ -85,7 +84,7 @@ export const inspect = async (email: string) => {
 }
 
 export const refreshToken = async (token: string) => {
-    const [err, jwtPayload] = (await tryit(verify)(token, env.JWT_REFRESH_KEY!)) as [Error | undefined, JWTPayload]
+    const [err, jwtPayload] = (await tryit(verify)(token, process.env.JWT_REFRESH_KEY!)) as [Error | undefined, JWTPayload]
 
     if(err) {
         customLogger("Refresh token error: ", `Token: ${token} failed to verify`)

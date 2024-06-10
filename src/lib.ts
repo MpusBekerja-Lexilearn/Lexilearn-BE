@@ -1,4 +1,3 @@
-import { env } from "bun";
 import { HTTPException } from "hono/http-exception";
 import { jwt, sign } from "hono/jwt"
 import {tryit} from "radash"
@@ -9,7 +8,7 @@ export type JWTCreateOptions = {
     type?: 'access' | 'refresh';
 }
 
-export const jwtware = jwt({ secret: env.JWT_ACCESS_KEY! })
+export const jwtware = jwt({ secret: process.env.JWT_ACCESS_KEY! })
 
 export const createJwt = async ({
     sub,
@@ -28,7 +27,7 @@ export const createJwt = async ({
         iat: Date.now() / 1000,
         nbf: Date.now() / 1000,
       },
-      type === 'access' ? env.JWT_ACCESS_KEY! : env.JWT_REFRESH_KEY!
+      type === 'access' ? process.env.JWT_ACCESS_KEY! : process.env.JWT_REFRESH_KEY!
     );
     if (err) {
       throw new HTTPException(500, { message: `failed to create ${type} token` });
