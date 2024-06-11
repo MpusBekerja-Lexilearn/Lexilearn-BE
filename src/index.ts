@@ -41,4 +41,7 @@ app.use(logger(customLogger))
 
 app.route('', AuthController)
 
-export default app
+export default {
+    port: process.env.PORT || 3000,
+    fetch: app.fetch
+}
