@@ -1,6 +1,6 @@
 import { HTTPException } from "hono/http-exception";
 import { jwt, sign } from "hono/jwt"
-import {tryit} from "radash"
+import { tryit } from "radash"
 
 export type JWTCreateOptions = {
     sub: string;

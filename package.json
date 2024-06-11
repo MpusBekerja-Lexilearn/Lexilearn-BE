@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "dev": "bun --env-file=.env.development --hot src/index.ts",
-    "build": "NODE_ENV=production bun run dist/index.js",
+    "build": "tsc && bun start",
     "drizzle:gen": "NODE_ENV=development bun drizzle-kit generate",
     "drizzle:migrate": "NODE_ENV=development bun drizzle-kit migrate",
-    "start": "bun dev"
+    "start": "bun --env-file=.env.production dist/src/index.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

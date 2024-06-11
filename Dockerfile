@@ -2,13 +2,8 @@ FROM oven/bun
 
 WORKDIR /app
 
-COPY package.json .
-COPY bun.lockb .
-
-RUN bun install
-
+COPY package*.json bun.lockb ./
+RUN bun install --frozen-lockfile
 COPY . .
 
-EXPOSE 3000
-
-CMD ["bun", "index.ts"]
+CMD ["bun", "dev"]
