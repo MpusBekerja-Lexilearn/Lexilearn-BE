@@ -5,32 +5,28 @@ import { tryit } from "radash"
 export type JWTCreateOptions = {
     sub: string;
     email: string;
-    type?: 'access' | 'refresh';
 }
 
 export const jwtware = jwt({ secret: process.env.JWT_ACCESS_KEY! })
 
 export const createJwt = async ({
     sub,
-    email,
-    type = 'access',
+    email
   }: JWTCreateOptions) => {
     
     const [err, jwt] = await tryit(sign)(
       {
         sub,
         email,
-        exp:
-          type === 'access'
-            ? Math.floor(Date.now() / 1000) + 5 * 60
-            : Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
+        exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
         iat: Date.now() / 1000,
         nbf: Date.now() / 1000,
       },
-      type === 'access' ? process.env.JWT_ACCESS_KEY! : process.env.JWT_REFRESH_KEY!
+      process.env.JWT_ACCESS_KEY!
     );
+    
     if (err) {
-      throw new HTTPException(500, { message: `failed to create ${type} token` });
+      throw new HTTPException(500, { message: `failed to create token` });
     }
   
     return jwt;

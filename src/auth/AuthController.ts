@@ -30,19 +30,6 @@ auth.post('register', vValidator('json', AuthSchema.registerSchema), async (c) =
     }, 201)
 })
 
-auth.post('refresh', vValidator('json', AuthSchema.refreshSchema), async (c) => {
-    const payload = c.req.valid('json')
-
-    const resp = await AuthService.refreshToken(payload.refresh_token)
-
-    return c.json({
-        code: 200,
-        message: "token refreshed",
-        ...resp
-    }, 200)
-
-})
-
 auth.get('inspect', jwtware, async (c) => {
     const jwtPayload = c.get('jwtPayload') as JWTPayload
 

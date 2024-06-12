@@ -4,8 +4,6 @@ import { customLogger } from "../utils/customLogger"
 import { tryit } from "radash"
 import * as AuthRepository from "./AuthRepository"
 import { JWTCreateOptions, createJwt } from "../lib"
-import { verify } from "hono/jwt"
-import { JWTPayload } from "../types"
 
 export const login = async (payload: LoginSchema) => {
     customLogger("Login user: ", `Email: ${payload.email}`)
@@ -32,23 +30,14 @@ export const login = async (payload: LoginSchema) => {
         email: user?.email!
     }
 
-    const accessToken = await createJwt({
-        ...jwtOpt,
-        type: 'access'
-    })
-
-    const refreshToken = await createJwt({
-        ...jwtOpt,
-        type: 'refresh'
-    })
+    const accessToken = await createJwt(jwtOpt)
 
     return {
         data: {
             user: {
                 ...user, password: undefined, updatedAt: undefined
             },
-            accessToken,
-            refreshToken
+            accessToken
         }
     }
 }
@@ -80,39 +69,5 @@ export const inspect = async (email: string) => {
         data: {
             ...user, password: undefined, updatedAt: undefined
          }
-    }
-}
-
-export const refreshToken = async (token: string) => {
-    const [err, jwtPayload] = (await tryit(verify)(token, process.env.JWT_REFRESH_KEY!)) as [Error | undefined, JWTPayload]
-
-    if(err) {
-        customLogger("Refresh token error: ", `Token: ${token} failed to verify`)
-        throw new HTTPException(401, {
-            message: "token is invalid"
-        })
-    }
-
-    const user = await AuthRepository.showByEmail(jwtPayload.email)
-    const jwtOpt: JWTCreateOptions = {
-        sub: user?.id!,
-        email: user?.email!
-    }
-
-    const accessToken = await createJwt({
-        ...jwtOpt,
-        type: 'access'
-    })
-
-    const refreshToken = await createJwt({
-        ...jwtOpt,
-        type: 'refresh'
-    })
-
-    return {
-        data: {
-            accessToken,
-            refreshToken
-        }
     }
 }
