@@ -3,9 +3,9 @@ import { pgTable, serial, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const users = pgTable('users', {
     id: serial('id').primaryKey(),
-    name: varchar('name', { length: 50 }),
-    email: varchar('email', { length: 50 }).unique(),
-    password: varchar('password', { length: 256 }),
+    name: varchar('name', { length: 50 }).notNull(),
+    email: varchar('email', { length: 50 }).unique().notNull(),
+    password: varchar('password', { length: 256 }).notNull(),
     photo: varchar('photo', { length: 256 }).default("default.jpg"),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at')
