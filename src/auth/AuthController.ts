@@ -1,13 +1,12 @@
 import { Hono } from "hono"
-import { vValidator } from "@hono/valibot-validator"
 import * as AuthSchema from "./AuthSchema"
 import * as AuthService from "./AuthService"
-import { jwtware } from "../lib"
+import { jwtware, validate } from "../lib"
 import { JWTPayload } from "../types"
 
 const auth = new Hono()
 
-auth.post('login', vValidator('json', AuthSchema.loginSchema), async (c) => {
+auth.post('login', validate('json', AuthSchema.loginSchema), async (c) => {
     const data = c.req.valid('json')
 
     const resp = await AuthService.login(data)
@@ -19,7 +18,7 @@ auth.post('login', vValidator('json', AuthSchema.loginSchema), async (c) => {
     }, 200)
 })
 
-auth.post('register', vValidator('json', AuthSchema.registerSchema), async (c) => {
+auth.post('register', validate('json', AuthSchema.registerSchema), async (c) => {
     const data = c.req.valid('json')
 
     await AuthService.register(data)
@@ -39,6 +38,31 @@ auth.get('inspect', jwtware, async (c) => {
         code: 200,
         message: "token is valid",
         ...resp
+    }, 200)
+})
+
+auth.patch('profile', jwtware, validate('json', AuthSchema.updateProfileSchema), async (c) => {
+    const jwtPayload = c.get('jwtPayload') as JWTPayload
+    const data = c.req.valid('json')
+
+    const resp = await AuthService.updateProfile(jwtPayload.email, data)
+
+    return c.json({
+        code: 200,
+        message: "profile updated",
+        ...resp
+    }, 200)
+})
+
+auth.patch('change-password', jwtware, validate("json", AuthSchema.changePasswordSchema), async (c) => {
+    const jwtPayload = c.get('jwtPayload') as JWTPayload
+    const data = c.req.valid('json')
+
+    await AuthService.changePassword(jwtPayload.email, data)
+
+    return c.json({
+        code: 200,
+        message: "password changed"
     }, 200)
 })
 

@@ -1,4 +1,4 @@
-import { LoginSchema, RegisterSchema } from "./AuthSchema"
+import { ChangePasswordSchema, LoginSchema, RegisterSchema, UpdateProfileSchema } from "./AuthSchema"
 import { HTTPException } from "hono/http-exception"
 import { customLogger } from "../utils/customLogger"
 import { tryit } from "radash"
@@ -69,5 +69,72 @@ export const inspect = async (email: string) => {
         data: {
             ...user, password: undefined, updatedAt: undefined
          }
+    }
+}
+
+export const updateProfile = async (email: string, payload: UpdateProfileSchema) => {
+    customLogger("Update profile user: ", `Email: ${email}`)
+    const user = await AuthRepository.showByEmail(email)
+    const [err, isMatch] = await tryit(Bun.password.verify)(payload.confirm_password, user?.password!)
+
+    if(err) {
+        customLogger("Update profile user error: ", `Email: ${email} failed to verify password`)
+        throw new HTTPException(500, {
+            message: "failed to verify password"
+        })
+    }
+
+    if(!isMatch) {
+        customLogger("Update profile user error: ", `Email: ${email} password not match`)
+        throw new HTTPException(400, {
+            message: "wrong password"
+        })
+    }
+
+    const newUser = await AuthRepository.updateProfile(email, payload)
+
+    customLogger("Update profile user success: ", `Email: ${email}`)
+    return {
+        data: {
+            ...newUser, password: undefined, updatedAt: undefined
+        }
+    }
+}
+
+export const changePassword = async (email: string, payload: ChangePasswordSchema) => {
+    customLogger("Change password user: ", `Email: ${email}`)
+    const user = await AuthRepository.showByEmail(email)
+    const [err, isMatch] = await tryit(Bun.password.verify)(payload.current_password, user?.password!)
+
+    if(err) {
+        customLogger("Change password user error: ", `Email: ${email} failed to verify current password`)
+        throw new HTTPException(500, {
+            message: "failed to verify current password"
+        })
+    }
+
+    if(!isMatch) {
+        customLogger("Change password user error: ", `Email: ${email} current password not match`)
+        throw new HTTPException(400, {
+            message: "wrong current password"
+        })
+    }
+
+    const [err2, hashPwd] = await tryit(Bun.password.hash)(payload.new_password)
+
+    if(err2) {
+        customLogger("Change password user error: ", `Email: ${email} failed to hash new password`)
+        throw new HTTPException(500, {
+            message: "failed to hash new password"
+        })
+    }
+
+    const newUser = await AuthRepository.changePassword(email, hashPwd)
+
+    customLogger("Change password user success: ", `Email: ${email}`)
+    return {
+        data: {
+            ...newUser, password: undefined, updatedAt: undefined
+        }
     }
 }

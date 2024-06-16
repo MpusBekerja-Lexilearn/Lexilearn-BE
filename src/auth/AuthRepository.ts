@@ -60,3 +60,29 @@ export const showByEmail = async (email: string) => {
 
     return user
 }
+
+export const updateProfile = async(email: string, payload: Partial<InsertUser>) => {
+    const [err, user] = await tryit(async() => (await db.update(users).set(payload).where(eq(users.email, email)).returning()).at(0))()
+
+    if(err) {
+        customLogger("Update profile user error: ", `Email: ${email} failed to update profile`)
+        throw new HTTPException(500, {
+            message: "failed to update profile"
+        })
+    }
+
+    return user
+}
+
+export const changePassword = async(email: string, password: string) => {
+    const [err, user] = await tryit(async() => (await db.update(users).set({ password }).where(eq(users.email, email)).returning()).at(0))()
+
+    if(err) {
+        customLogger("Change password user error: ", `Email: ${email} failed to change password`)
+        throw new HTTPException(500, {
+            message: "failed to change password"
+        })
+    }
+
+    return user
+}

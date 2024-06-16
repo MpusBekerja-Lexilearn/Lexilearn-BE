@@ -30,7 +30,8 @@ app.onError((err, c) => {
 
         return c.json({
             code: err.status,
-            message: errMsg
+            message: errMsg,
+            errors: errMsg === 'validation error' ? err.cause : undefined
         }, err.status);
     }
 
