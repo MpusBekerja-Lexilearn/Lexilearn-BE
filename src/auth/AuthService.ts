@@ -132,9 +132,4 @@ export const changePassword = async (email: string, payload: ChangePasswordSchem
     const newUser = await AuthRepository.changePassword(email, hashPwd)
 
     customLogger("Change password user success: ", `Email: ${email}`)
-    return {
-        data: {
-            ...newUser, password: undefined, updatedAt: undefined
-        }
-    }
 }
