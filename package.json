@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun --env-file=.env.development --hot src/index.ts",
+    "dev": "bun --hot src/index.ts",
     "build": "tsc && bun start",
-    "drizzle:gen": "NODE_ENV=development bun drizzle-kit generate",
-    "drizzle:migrate": "NODE_ENV=development bun drizzle-kit migrate",
-    "start": "bun --env-file=.env.production dist/src/index.js"
+    "drizzle:gen": "bun drizzle-kit generate",
+    "drizzle:migrate": "bun src/migrate.ts",
+    "start": "bun dist/src/index.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
@@ -18,9 +18,10 @@
     "valibot": "^0.31.1"
   },
   "devDependencies": {
+    "@hono/valibot-validator": "^0.3.0",
+    "@t3-oss/env-core": "^0.10.1",
     "@types/bun": "latest",
     "drizzle-kit": "^0.22.6",
-    "@hono/valibot-validator": "^0.3.0",
-    "@t3-oss/env-core": "^0.10.1"
+    "jest": "^29.7.0"
   }
 }

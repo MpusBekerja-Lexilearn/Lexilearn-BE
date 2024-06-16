@@ -1,12 +1,11 @@
 import { tryit } from "radash"
 import { db } from "../db"
 import { eq } from "drizzle-orm"
-import { users } from "../schema"
+import { InsertUser, users } from "../schema"
 import { customLogger } from "../utils/customLogger"
 import { HTTPException } from "hono/http-exception"
-import { RegisterSchema } from "./AuthSchema"
 
-export const create = async(payload: RegisterSchema) => { 
+export const create = async(payload: InsertUser) => { 
     await verifyEmailAvaibility(payload.email)
     const [err] = await tryit(async() => db.insert(users).values(payload))()
 

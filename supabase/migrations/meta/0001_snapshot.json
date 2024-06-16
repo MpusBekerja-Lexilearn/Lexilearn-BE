@@ -1,6 +1,6 @@
 {
-  "id": "738eb249-c4da-487b-99b1-fa176f36d9cf",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "c234c1d4-a706-400f-9fae-2b4baeaee638",
+  "prevId": "738eb249-c4da-487b-99b1-fa176f36d9cf",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -136,6 +136,12 @@
           "primaryKey": true,
           "notNull": true
         },
+        "answer_id": {
+          "name": "answer_id",
+          "type": "serial",
+          "primaryKey": false,
+          "notNull": true
+        },
         "question_id": {
           "name": "question_id",
           "type": "serial",
@@ -165,6 +171,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "screening_answer_details_answer_id_screening_answers_id_fk": {
+          "name": "screening_answer_details_answer_id_screening_answers_id_fk",
+          "tableFrom": "screening_answer_details",
+          "tableTo": "screening_answers",
+          "columnsFrom": [
+            "answer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
         "screening_answer_details_question_id_screening_questions_id_fk": {
           "name": "screening_answer_details_question_id_screening_questions_id_fk",
           "tableFrom": "screening_answer_details",

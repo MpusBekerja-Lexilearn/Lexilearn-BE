@@ -4,6 +4,9 @@ import { logger } from 'hono/logger'
 import { prettyJSON } from 'hono/pretty-json'
 import AuthController from "./auth/AuthController"
 import { customLogger } from './utils/customLogger';
+import screeningQuestionController from './screening_question/ScreeningQuestionController';
+import screeningAnswerController from './screening_answer/SreeningAnswerController';
+import quizQuestionController from './quiz_question/QuizQuestionController';
 
 const app = new Hono()
 
@@ -32,7 +35,7 @@ app.onError((err, c) => {
     }
 
     return c.json({
-        code : 500, 
+        code: 500,
         message: err.message || 'internal server error'
     }, 500);
 })
@@ -40,6 +43,9 @@ app.use(prettyJSON())
 app.use(logger(customLogger))
 
 app.route('', AuthController)
+app.route('screening/questions', screeningQuestionController)
+app.route('screening/answers', screeningAnswerController)
+app.route('quiz/questions', quizQuestionController)
 
 export default {
     port: process.env.PORT || 3000,
