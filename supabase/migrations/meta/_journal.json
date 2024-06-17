@@ -15,6 +15,13 @@
       "when": 1718386961743,
       "tag": "0001_aberrant_daredevil",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1718599178663,
+      "tag": "0002_premium_harpoon",
+      "breakpoints": true
     }
   ]
 }

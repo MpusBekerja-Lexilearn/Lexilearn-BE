@@ -87,11 +87,14 @@ export type InsertScreeningAnswerDetail = typeof screeningAnswerDetail.$inferIns
  */
 
 export const quizQuestionTypeEnum = pgEnum('quiz_question_type_enum', ['text', 'audio', 'image']);
+export const quizQuestionAnswerTypeEnum = pgEnum('quiz_question_answer_type_enum', ['text', 'scrumble', 'handwriting']);
 
 export const quizQuestions = pgTable('quiz_questions', {
     id: serial('id').primaryKey(),
     type: quizQuestionTypeEnum('type').notNull(),
     question: text('question').notNull(),
+    answerType: quizQuestionAnswerTypeEnum('answer_type').notNull(),
+    answerList: text('answer_list').notNull(),
     answerKey: text('answer_key').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at')
