@@ -87,7 +87,7 @@ export type InsertScreeningAnswerDetail = typeof screeningAnswerDetail.$inferIns
  */
 
 export const quizQuestionTypeEnum = pgEnum('quiz_question_type_enum', ['text', 'audio', 'image']);
-export const quizQuestionAnswerTypeEnum = pgEnum('quiz_question_answer_type_enum', ['text', 'scrumble', 'handwriting']);
+export const quizQuestionAnswerTypeEnum = pgEnum('quiz_question_answer_type_enum', ['multiple', 'scrumble', 'handwriting']);
 
 export const quizQuestions = pgTable('quiz_questions', {
     id: serial('id').primaryKey(),
@@ -114,8 +114,7 @@ export type InsertQuizQuestion = typeof quizQuestions.$inferInsert;
 export const quizAnswers = pgTable('quiz_answers', {
     id: serial('id').primaryKey(),
     userId: serial('user_id').notNull().references(() => users.id),
-    questionId: serial('question_id').notNull().references(() => quizQuestions.id),
-    answer: text('answer').notNull(),
+    score: serial('score').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at')
         .notNull()
@@ -124,3 +123,23 @@ export const quizAnswers = pgTable('quiz_answers', {
 
 export type SelectQuizAnswer = typeof quizAnswers.$inferSelect;
 export type InsertQuizAnswer = typeof quizAnswers.$inferInsert;
+
+/********** SCHEMA **********
+ * @Table quiz_answer_details
+ * @PrimaryKey id
+ * @Fields id, answerId, questionId, answer, createdAt, updatedAt
+ */
+
+export const quizAnswerDetail = pgTable('quiz_answer_details', {
+    id: serial('id').primaryKey(),
+    answerId: serial('answer_id').notNull().references(() => quizAnswers.id),
+    questionId: serial('question_id').notNull().references(() => quizQuestions.id),
+    answer: text('answer').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at')
+        .notNull()
+        .$onUpdate(() => new Date()),
+});
+
+export type SelectQuizAnswerDetail = typeof quizAnswerDetail.$inferSelect;
+export type InsertQuizAnswerDetail = typeof quizAnswerDetail.$inferInsert;

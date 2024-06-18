@@ -5,8 +5,9 @@ import { HTTPException } from "hono/http-exception"
 import { tryit } from "radash"
 
 export const get = async () => {
-    const [err, questions] = await tryit(async () => db.query.quizQuestions.findFirst({
+    const [err, questions] = await tryit(async () => db.query.quizQuestions.findMany({
         orderBy: sql`RANDOM()`,
+        limit: 5
     }))()
 
     if (err) {

@@ -7,6 +7,7 @@ import { customLogger } from './utils/customLogger';
 import screeningQuestionController from './screening_question/ScreeningQuestionController';
 import screeningAnswerController from './screening_answer/SreeningAnswerController';
 import quizQuestionController from './quiz_question/QuizQuestionController';
+import quizAnswerController from './quiz_answer/QuizAnswerController';
 
 const app = new Hono()
 
@@ -47,6 +48,7 @@ app.route('', AuthController)
 app.route('screening/questions', screeningQuestionController)
 app.route('screening/answers', screeningAnswerController)
 app.route('quiz/questions', quizQuestionController)
+app.route('quiz/answers', quizAnswerController)
 
 export default {
     port: process.env.PORT || 3000,
