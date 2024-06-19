@@ -1,5 +1,4 @@
-import { jwtware } from "@/lib";
-import { vValidator } from "@hono/valibot-validator";
+import { jwtware, validate } from "@/lib";
 import { Hono } from "hono";
 import { screeningAnswerListSchema } from "./ScreeningAnswerSchema";
 import * as ScreeningAnswerService from "./ScreeningAnswerService";
@@ -7,7 +6,7 @@ import { JWTPayload } from "@/types";
 
 const screeningAnswer = new Hono()
 
-screeningAnswer.post('', jwtware, vValidator('json', screeningAnswerListSchema), async (c) => {
+screeningAnswer.post('', jwtware, validate('json', screeningAnswerListSchema), async (c) => {
     const payload = c.req.valid('json')
     const claims = c.get('jwtPayload') as JWTPayload
 

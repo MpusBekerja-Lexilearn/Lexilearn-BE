@@ -8,6 +8,13 @@
       "when": 1718709935572,
       "tag": "0000_chubby_mole_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1718732413232,
+      "tag": "0001_petite_lake",
+      "breakpoints": true
     }
   ]
 }

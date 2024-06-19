@@ -114,7 +114,7 @@ export type InsertQuizQuestion = typeof quizQuestions.$inferInsert;
 export const quizAnswers = pgTable('quiz_answers', {
     id: serial('id').primaryKey(),
     userId: serial('user_id').notNull().references(() => users.id),
-    score: serial('score').notNull(),
+    score: varchar('score', { length: 10 }).notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at')
         .notNull()
