@@ -1,7 +1,7 @@
 import { QuizAnswerListSchema } from "./QuizAnswerSchema";
 import * as QuizAnswerRepository from "./QuizAnswerRepository";
 import * as QuizQuestionRepository from "@/quiz_question/QuizQuestionRepository";
-import { InsertQuizAnswer } from "@/schema";
+import { InsertQuizAnswer, quizQuestionTypeEnum } from "@/schema";
 
 export const createAnswer = async (claimId: string, payload: QuizAnswerListSchema) => {
     const questions = await QuizQuestionRepository.getManyById(payload.answers.map((answer) => answer.questionId));
@@ -13,7 +13,11 @@ export const createAnswer = async (claimId: string, payload: QuizAnswerListSchem
             return acc;
         }
 
-        if (question.answerKey === answer.answer) {
+        const quizAnswer = question.type === quizQuestionTypeEnum.enumValues[1]
+            ? answer.answer.split(',').join('')
+            : answer.answer;
+
+        if (question.answerKey === quizAnswer) {
             return acc + 1;
         }
 
@@ -32,17 +36,20 @@ export const createAnswer = async (claimId: string, payload: QuizAnswerListSchem
             return null;
         }
 
+        const quizAnswer = question.type === quizQuestionTypeEnum.enumValues[1]
+            ? answer.answer.split(',').join('')
+            : answer.answer;
+
         return {
             questionId: question.id,
-            answer: answer.answer,
+            answer: quizAnswer,
         };
-    })
-    const filteredChildPayload = childPayload.filter(answer => answer !== null);
+    }).filter(answer => answer !== null);
 
-    const quizAnswerId = await QuizAnswerRepository.createAnswer(parentPayload, filteredChildPayload);
+    const quizAnswerId = await QuizAnswerRepository.createAnswer(parentPayload, childPayload);
 
     return {
         answerId: quizAnswerId,
         score: parentPayload.score,
-    }
-} 
+    };
+};
